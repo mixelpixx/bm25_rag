@@ -1,4 +1,4 @@
-# OpenAI Chatbot
+# BM25 OpenAI RAG Chatbot
 
 ## Description
 This project is a chatbot that uses OpenAI for embeddings and partial response creation. It also incorporates generative AI. It's kind of a monster RAG bot.
