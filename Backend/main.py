@@ -15,8 +15,11 @@ from llama_index.core.postprocessor import SentenceTransformerRerank
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.retrievers import BaseRetriever
 from llama_index.core.response.notebook_utils import display_response
+from flask import Flask, request, jsonify
 
-os.environ["OPENAI_API_KEY"] = "sk-..."
+app = Flask(__name__)
+
+# Retrieve the OpenAI API key from an environment variable
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -84,8 +87,13 @@ query_engine = RetrieverQueryEngine.from_args(
 
 
 # Users Query
-response = query_engine.query(
-    "What is the impact of climate change on the ocean?"
-)
+@app.route('/query', methods=['POST'])
+def query():
+    data = request.get_json()
+    user_query = data['query']
+    response = query_engine.query(user_query)
+    return str(response)
 
-display_response(response)
+
+if __name__ == '__main__':
+    app.run()
