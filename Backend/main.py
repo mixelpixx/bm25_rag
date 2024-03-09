@@ -15,17 +15,25 @@ from llama_index.core.postprocessor import SentenceTransformerRerank
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.retrievers import BaseRetriever
 from llama_index.core.response.notebook_utils import display_response
-from flask import Flask, request, jsonify
+from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.vector_stores.chroma import ChromaVectorStore
 
-app = Flask(__name__)
-
-# Retrieve the OpenAI API key from an environment variable
-openai.api_key = os.environ["OPENAI_API_KEY"]
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logging.getLogger().handlers = []
 logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
 
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY") or getpass.getpass("OpenAI API Key:")
+openai.api_key = os.environ["OPENAI_API_KEY"]
+
+# ChromaDB setup 
+chroma_client = chromadb.EphemeralClient()
+chroma_collection = chroma_client.create_collection("quickstart")
+
+embed_model = OpenAIEmbedding(
+    model="text-embedding-3-large",
+    dimensions=3072,
+)
 
 # load documents
 documents = SimpleDirectoryReader("./documents").load_data()
@@ -87,13 +95,8 @@ query_engine = RetrieverQueryEngine.from_args(
 
 
 # Users Query
-@app.route('/query', methods=['POST'])
-def query():
-    data = request.get_json()
-    user_query = data['query']
-    response = query_engine.query(user_query)
-    return str(response)
+response = query_engine.query(
+    "What is the impact of climate change on the ocean?"
+)
 
-
-if __name__ == '__main__':
-    app.run()
+display_response(response)
