@@ -2,6 +2,7 @@ import os
 import openai
 import logging
 import sys
+import chromadb
 from llama_index.core import (
     SimpleDirectoryReader,
     StorageContext,
@@ -15,6 +16,7 @@ from llama_index.core.postprocessor import SentenceTransformerRerank
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.retrievers import BaseRetriever
 from llama_index.core.response.notebook_utils import display_response
+from llama_index.llms.openai import OpenAIEmbedding
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
@@ -81,7 +83,6 @@ class HybridRetriever(BaseRetriever):
                 all_nodes.append(n)
                 node_ids.add(n.node.node_id)
         return all_nodes
-index.as_retriever(similarity_top_k=5)
 
 hybrid_retriever = HybridRetriever(vector_retriever, bm25_retriever)
 
