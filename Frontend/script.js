@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userInput = document.getElementById('user-input');
     const submitButton = document.getElementById('submit-button');
     const loadingIndicator = document.getElementById('loading');
+    const clearChatButton = document.getElementById('clear-chat');
 
     submitButton.addEventListener('click', submitQuery);
     userInput.addEventListener('keypress', (e) => {
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitQuery();
         }
     });
+    clearChatButton.addEventListener('click', clearChat);
 
     function submitQuery() {
         const query = userInput.value.trim();
@@ -26,14 +28,19 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             body: JSON.stringify({query: query}),
         })
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
-            addMessage('bot', data);
+            addMessage('bot', data.response);
             loadingIndicator.style.display = 'none';
         })
         .catch(error => {
             console.error('Error:', error);
-            addMessage('bot', 'Sorry, an error occurred. Please try again.');
+            addMessage('bot', 'Sorry, an error occurred. Please try again later.');
             loadingIndicator.style.display = 'none';
         });
     }
@@ -44,5 +51,9 @@ document.addEventListener('DOMContentLoaded', () => {
         messageElement.textContent = text;
         chatMessages.appendChild(messageElement);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function clearChat() {
+        chatMessages.innerHTML = '';
     }
 });

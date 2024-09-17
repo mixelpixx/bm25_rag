@@ -3,21 +3,8 @@ import openai
 import logging
 import sys
 import chromadb
-from llama_index.core import (
-    SimpleDirectoryReader,
-    StorageContext,
-    VectorStoreIndex,
-)
-from llama_index.retrievers.bm25 import BM25Retriever
-from llama_index.core.retrievers import VectorIndexRetriever
-from llama_index.core.node_parser import SentenceSplitter
-from llama_index.llms.openai import OpenAI
-from llama_index.core.postprocessor import SentenceTransformerRerank
-from llama_index.core.query_engine import RetrieverQueryEngine
-from llama_index.core.retrievers import BaseRetriever
-from llama_index.core.response.notebook_utils import display_response
-from llama_index.llms.openai import OpenAIEmbedding
 from flask import Flask, request, jsonify
+from flask_limiter import Limiter
 
 app = Flask(__name__)
 
@@ -95,14 +82,24 @@ query_engine = RetrieverQueryEngine.from_args(
 )
 
 
+# Initialize rate limiter
+limiter = Limiter(
+    app,
+    key_func=lambda: request.remote_addr,
+    default_limits=["5 per minute", "100 per day"]
+)
+
 # Users Query
 @app.route('/query', methods=['POST'])
+@limiter.limit("5 per minute")
 def query():
-    data = request.get_json()
-    user_query = data['query']
-    response = query_engine.query(user_query)
-    return str(response)
-
+    try:
+        data = request.get_json()
+        user_query = data['query']
+        response = query_engine.query(user_query)
+        return jsonify({"response": str(response)})
+    except Exception as e:
+        return jsonify({"error": "An error occurred while processing your request."}), 500
 
 if __name__ == '__main__':
     app.run()
