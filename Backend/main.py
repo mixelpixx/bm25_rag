@@ -5,8 +5,16 @@ import sys
 import chromadb
 from flask import Flask, request, jsonify
 from flask_limiter import Limiter
+from flask_cors import CORS
+from langchain.document_loaders import DirectoryLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.llms import OpenAI
+from langchain.chains import RetrievalQA
 
 app = Flask(__name__)
+CORS(app)
 
 # Retrieve the OpenAI API key from an environment variable
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -15,9 +23,30 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logging.getLogger().handlers = []
 logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
 
-# ChromaDB setup 
-chroma_client = chromadb.EphemeralClient()
-chroma_collection = chroma_client.create_collection("quickstart")
+# Document loading and processing
+loader = DirectoryLoader('./documents', glob="**/*.txt")
+documents = loader.load()
+
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+texts = text_splitter.split_documents(documents)
+
+# Embedding and vector store setup
+embeddings = OpenAIEmbeddings()
+vectorstore = Chroma.from_documents(texts, embeddings)
+
+# Retrieval setup
+retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 5})
+
+# LLM setup
+llm = OpenAI(temperature=0)
+
+# Create RetrievalQA chain
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",
+    retriever=retriever,
+    return_source_documents=True
+)
 
 embed_model = OpenAIEmbedding(
     model="text-embedding-3-large",
@@ -96,10 +125,15 @@ def query():
     try:
         data = request.get_json()
         user_query = data['query']
-        response = query_engine.query(user_query)
-        return jsonify({"response": str(response)})
+        result = qa_chain({"query": user_query})
+        response = {
+            "answer": result['result'],
+            "sources": [doc.metadata['source'] for doc in result['source_documents']]
+        }
+        return jsonify(response)
     except Exception as e:
+        logging.error(f"An error occurred: {str(e)}")
         return jsonify({"error": "An error occurred while processing your request."}), 500
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

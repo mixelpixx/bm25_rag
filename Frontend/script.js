@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         userInput.value = '';
         loadingIndicator.style.display = 'flex';
 
-        fetch('/query', {
+        fetch('http://localhost:5000/query', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -35,7 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(data => {
-            addMessage('bot', data.response);
+            addMessage('bot', data.answer);
+            if (data.sources && data.sources.length > 0) {
+                addMessage('bot', 'Sources: ' + data.sources.join(', '));
+            }
             loadingIndicator.style.display = 'none';
         })
         .catch(error => {
@@ -48,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function addMessage(sender, text) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message', `${sender}-message`);
-        messageElement.textContent = text;
+        messageElement.innerHTML = marked(text);
         chatMessages.appendChild(messageElement);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }

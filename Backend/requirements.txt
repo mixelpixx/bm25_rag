@@ -2,3 +2,5 @@ Flask
 openai
 chromadb
 flask-limiter
+flask-cors
+langchain
