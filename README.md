@@ -1,52 +1,93 @@
 # BM25 OpenAI RAG Chatbot
 
 ## Description
-This project is a chatbot that leverages OpenAI's GPT-4 for generating responses and embeddings in combination with BM25 for information retrieval. It uses a hybrid retrieval approach to provide accurate and contextually relevant answers. The chatbot is designed to handle a range of queries by integrating generative AI with retrieval-augmented generation (RAG) techniques.
+This project implements an advanced chatbot that combines OpenAI's GPT-4 for generating responses and embeddings with BM25 for information retrieval. It utilizes a hybrid retrieval approach to provide accurate and contextually relevant answers. The chatbot is designed to handle a wide range of queries by integrating generative AI with retrieval-augmented generation (RAG) techniques.
+
+## Features
+- Hybrid retrieval system combining vector search and BM25
+- Integration with OpenAI's GPT-4 for natural language understanding and generation
+- Flask-based backend with rate limiting and CORS support
+- Simple and intuitive frontend interface
 
 ## Installation
-The project is divided into two main parts: the backend and the frontend. 
 
-### Backend
-The backend is written in Python and uses Flask as a web server. It also utilizes libraries such as OpenAI, ChromaDB, and others. Ensure you have Python and pip installed on your machine. Follow these steps to set up the backend:
+### Prerequisites
+- Python 3.8 or higher
+- Node.js and npm (for potential frontend package management)
+- OpenAI API key
 
-#### Setting up the Python environment
-1. **Install Python and pip**: Download Python from the official website. Pip is included in the Python installation.
-2. **Create a virtual environment**: Run `python -m venv env` in the /Backend directory.
-3. **Activate the virtual environment**: On Windows, run `.\env\Scripts\activate`. On macOS/Linux, use `source env/bin/activate`.
-4. **Install dependencies**: Run `pip install -r requirements.txt`.
+### Backend Setup
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/bm25-openai-rag-chatbot.git
+   cd bm25-openai-rag-chatbot/Backend
+   ```
 
-#### Running the Flask server
-1. **Set the FLASK_APP environment variable**: On Windows, run `set FLASK_APP=main.py`. On macOS/Linux, use `export FLASK_APP=main.py`.
-2. **Run the Flask server**: Execute `flask run` to start the server.
+2. Run the `start_project.bat` file (for Windows users):
+   ```
+   start_project.bat
+   ```
+   This script will:
+   - Create and activate a virtual environment
+   - Install required packages
+   - Set up environment variables
+   - Start the Flask server
 
-#### Placing files for ingestion
-Place any files or documents you want the backend to ingest in the `./documents` directory.
+   For manual setup or non-Windows users, follow these steps:
+   ```
+   python -m venv env
+   source env/bin/activate  # On Windows use `env\Scripts\activate`
+   pip install -r requirements.txt
+   export FLASK_APP=main.py
+   export OPENAI_API_KEY=your_api_key_here
+   flask run
+   ```
 
-### Frontend
-The frontend is a simple HTML, CSS, and JavaScript application.
+3. Place any documents you want the chatbot to use in the `./documents` directory.
 
-#### Opening the frontend
-Navigate to the /Frontend directory and open the `index.html` file in a web browser.
+### Frontend Setup
+1. Navigate to the Frontend directory:
+   ```
+   cd ../Frontend
+   ```
+
+2. Open `index.html` in a web browser.
 
 ## Usage
-To interact with the chatbot:
-1. Open the frontend in your browser.
-2. Enter your query in the input field and press "Send".
-3. The chatbot will process your query and display the response.
+1. Ensure the backend server is running.
+2. Open the frontend (`index.html`) in a web browser.
+3. Enter your query in the input field and click "Send" or press Enter.
+4. The chatbot will process your query and display the response.
 
-## Troubleshooting and FAQs
+## Configuration
+- Adjust rate limiting in `main.py` if needed.
+- Modify the `chroma_db` path in `main.py` to change the location of the vector store.
+
+## Troubleshooting
+
 ### Common Issues
+1. **OpenAI API Key Error**: Ensure you've set the `OPENAI_API_KEY` environment variable correctly.
+2. **Port Already in Use**: If port 5000 is occupied, change the port in `main.py` or stop the conflicting process.
+3. **CORS Issues**: Verify that the frontend URL is correctly set in the CORS configuration in `main.py`.
 
 ### FAQs
+Q: How do I add new documents for the chatbot to use?
+A: Place new text files in the `./documents` directory and restart the backend server.
 
-## Contribution Guidelines
+Q: Can I use a different language model?
+A: Yes, modify the `llm` variable in `main.py` to use a different model from OpenAI or other providers.
+
+## Contributing
 We welcome contributions! Please follow these steps:
 1. Fork the repository.
 2. Create a new branch for your feature or bugfix.
-3. Submit a pull request with a detailed description of your changes.
+3. Make your changes and test thoroughly.
+4. Submit a pull request with a clear description of your changes.
 
-## License and Credits
-This project is licensed under the MIT License. Special thanks to OpenAI and contributors for their support and resources.
+## License
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-## Additional setup instructions for Windows 10
-If you are using Windows 10, you may need to add Python and pip to your PATH. You can do this by following the instructions on the Python website.
+## Acknowledgements
+- OpenAI for providing the GPT-4 model and embeddings
+- The Langchain community for their excellent tools and documentation
+- Contributors and users of this project for their valuable input and feedback
