@@ -18,8 +18,10 @@ pip install -r requirements.txt
 REM Set the FLASK_APP environment variable
 set FLASK_APP=main.py
 
-REM Set the OPENAI_API_KEY environment variable
-set /p OPENAI_API_KEY=Enter your OpenAI API key: 
+REM Check if OPENAI_API_KEY is already set
+if not defined OPENAI_API_KEY (
+    set /p OPENAI_API_KEY=Enter your OpenAI API key: 
+)
 
 REM Run the Flask server
 echo Starting Flask server...
@@ -31,7 +33,8 @@ timeout /t 5 /nobreak >nul
 
 REM Open the default web browser to the frontend
 echo Opening frontend in default browser...
-start ..\Frontend\index.html
+start "" "http://localhost:5000"
 
-echo Setup complete. Press any key to exit.
+echo Setup complete. The server is running and the frontend should open in your default browser.
+echo Press Ctrl+C in the server window to stop the server when you're done.
 pause

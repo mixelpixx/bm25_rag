@@ -13,7 +13,6 @@ This project implements an advanced chatbot that combines OpenAI's GPT-4 for gen
 
 ### Prerequisites
 - Python 3.8 or higher
-- Node.js and npm (for potential frontend package management)
 - OpenAI API key
 
 ### Backend Setup
@@ -32,6 +31,7 @@ This project implements an advanced chatbot that combines OpenAI's GPT-4 for gen
    - Install required packages
    - Set up environment variables
    - Start the Flask server
+   - Open the frontend in your default web browser
 
    For manual setup or non-Windows users, follow these steps:
    ```
@@ -46,18 +46,16 @@ This project implements an advanced chatbot that combines OpenAI's GPT-4 for gen
 3. Place any documents you want the chatbot to use in the `./documents` directory.
 
 ### Frontend Setup
-1. Navigate to the Frontend directory:
-   ```
-   cd ../Frontend
-   ```
+The frontend is automatically opened by the `start_project.bat` script. If you need to open it manually:
 
-2. Open `index.html` in a web browser.
+1. Ensure the backend server is running.
+2. Open `Frontend/index.html` in a web browser.
 
 ## Usage
-1. Ensure the backend server is running.
-2. Open the frontend (`index.html`) in a web browser.
-3. Enter your query in the input field and click "Send" or press Enter.
-4. The chatbot will process your query and display the response.
+1. After running `start_project.bat`, the chatbot interface should open in your default web browser.
+2. Enter your query in the input field and click "Send" or press Enter.
+3. The chatbot will process your query and display the response.
+4. Use the "Clear Chat" button to start a new conversation.
 
 ## Configuration
 - Adjust rate limiting in `main.py` if needed.
@@ -66,9 +64,20 @@ This project implements an advanced chatbot that combines OpenAI's GPT-4 for gen
 ## Troubleshooting
 
 ### Common Issues
-1. **OpenAI API Key Error**: Ensure you've set the `OPENAI_API_KEY` environment variable correctly.
-2. **Port Already in Use**: If port 5000 is occupied, change the port in `main.py` or stop the conflicting process.
-3. **CORS Issues**: Verify that the frontend URL is correctly set in the CORS configuration in `main.py`.
+1. **OpenAI API Key Error**: 
+   - Ensure you've entered a valid API key when prompted by the `start_project.bat` script.
+   - For manual setup, make sure the `OPENAI_API_KEY` environment variable is set correctly.
+
+2. **Port Already in Use**: 
+   - If port 5000 is occupied, change the port in `main.py` or stop the conflicting process.
+   - You can modify the `flask run` command in `start_project.bat` to use a different port, e.g., `flask run --port=5001`.
+
+3. **CORS Issues**: 
+   - Verify that the frontend URL is correctly set in the CORS configuration in `main.py`.
+   - If you're running the frontend from a different location, update the CORS settings accordingly.
+
+4. **Python Version Mismatch**:
+   - Ensure you're using Python 3.8 or higher. You can check your version with `python --version`.
 
 ### FAQs
 Q: How do I add new documents for the chatbot to use?
@@ -76,6 +85,9 @@ A: Place new text files in the `./documents` directory and restart the backend s
 
 Q: Can I use a different language model?
 A: Yes, modify the `llm` variable in `main.py` to use a different model from OpenAI or other providers.
+
+Q: How can I customize the chatbot's appearance?
+A: Edit the `Frontend/style.css` file to change the chatbot's visual design.
 
 ## Contributing
 We welcome contributions! Please follow these steps:
@@ -91,3 +103,8 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 - OpenAI for providing the GPT-4 model and embeddings
 - The Langchain community for their excellent tools and documentation
 - Contributors and users of this project for their valuable input and feedback
+
+## Support
+If you encounter any issues or have questions, please open an issue on the GitHub repository or contact the maintainers directly.
+
+Remember to keep your OpenAI API key confidential and never share it publicly or commit it to version control systems.
