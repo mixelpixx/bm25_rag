@@ -21,8 +21,8 @@ This project implements an advanced chatbot that combines OpenAI's GPT-4 for gen
 ### Backend Setup
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/bm25-openai-rag-chatbot.git
-   cd bm25-openai-rag-chatbot/Backend
+   git clone https://github.com/mixelpixx/bm25_rag.git
+   cd bm25_rag/Backend
    ```
 
 2. Run the `start_project.bat` file (for Windows users):
