@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const chatMessages = document.getElementById('chat-messages');
+    const chatMessages = document.querySelector('#chat-messages');
     const userInput = document.getElementById('user-input');
     const submitButton = document.getElementById('submit-button');
     const loadingIndicator = document.getElementById('loading');
@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         userInput.value = '';
         loadingIndicator.style.display = 'flex';
 
+        // Fetching the response from the server
         fetch('http://localhost:5000/query', {
             method: 'POST',
             headers: {
@@ -49,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addMessage(sender, text) {
+        // Create and append message elements
         const messageElement = document.createElement('div');
         messageElement.classList.add('message', `${sender}-message`);
         messageElement.innerHTML = marked(text);
