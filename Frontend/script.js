@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(data => {
-            addMessage('bot', data.answer);
+            addMessage('bot', data.answer, true);
             if (data.sources && data.sources.length > 0) {
                 addMessage('bot', 'Sources: ' + data.sources.join(', '));
             }
@@ -44,16 +44,33 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
             console.error('Error:', error);
-            addMessage('bot', 'Sorry, an error occurred. Please try again later.');
+            addMessage('bot', 'Sorry, an error occurred. Please try again later.', true);
             loadingIndicator.style.display = 'none';
         });
     }
 
-    function addMessage(sender, text) {
-        // Create and append message elements
+    function addMessage(sender, text, animate = false) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message', `${sender}-message`);
-        messageElement.innerHTML = marked(text);
+        
+        if (animate && sender === 'bot') {
+            messageElement.classList.add('typing');
+            let i = 0;
+            const typingEffect = setInterval(() => {
+                if (i < text.length) {
+                    messageElement.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingEffect);
+                    messageElement.classList.remove('typing');
+                    messageElement.innerHTML = marked(text);
+                }
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 30);
+        } else {
+            messageElement.innerHTML = marked(text);
+        }
+        
         chatMessages.appendChild(messageElement);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
